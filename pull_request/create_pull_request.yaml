@@ -1,0 +1,37 @@
+# Edit the template parameters below to see how they will render in the scaffolder form UI
+parameters:
+  - title: Fill in some steps
+    required:
+      - name
+    properties:
+      repo:
+        title: Repo
+        type: string
+        description: Repo Name
+      owner:
+        title: Owner
+        type: string
+        description: Org name
+      token:
+        title: Token
+        type: string
+        description: Personal Access Token
+      targetPath:
+        title: TargetPath
+        type: string
+        description: Targrt Path       
+steps:
+  - id: github-pr
+    action: publish:github:pull-request
+    name: Create a pull request
+    input:
+      repoUrl: github.com?repo=${{parameters.repo}}&owner=${{parameters.owner}}
+      branchName: test_branch_name_001
+      title: Create PR
+      description: This PR is really good
+      targetBranchName: test_target_branch_name_001
+      targetPath: targetPath
+      token: ${{parameters.token}}
+      commitMessage: Commit for foo changes
+      gitAuthorName: Foo Bar
+      createWhenEmpty: true
