@@ -2,46 +2,67 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: github-pull-request
-  title: GitHub Pull Request
-  description: Scaffolder template demo publishing a Merge Request on existing GitHub repository
+  title: Github Merge Request Action
+  description: Scaffolder template demo publishing a Merge Request on existing GitLab repository
 spec:
   owner: backstage/techdocs-core
   type: service
 
-# Edit the template parameters below to see how they will render in the scaffolder form UI
-parameters:
-  - title: Fill in some steps
-    required:
-      - name
-    properties:
-      repo:
-        title: Repo
-        type: string
-        description: Repo Name
-      owner:
-        title: Owner
-        type: string
-        description: Org name
-      token:
-        title: Token
-        type: string
-        description: Personal Access Token
-      targetPath:
-        title: TargetPath
-        type: string
-        description: Targrt Path       
-steps:
-  - id: github-pr
-    action: publish:github:pull-request
-    name: Create a pull request
-    input:
-      repoUrl: github.com?repo=${{parameters.repo}}&owner=${{parameters.owner}}
-      branchName: test_branch_name_001
-      title: Create PR
-      description: This PR is really good
-      targetBranchName: test_target_branch_name_001
-      targetPath: targetPath
-      token: ${{parameters.token}}
-      commitMessage: Commit for foo changes
-      gitAuthorName: Foo Bar
-      createWhenEmpty: true
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        description:
+          title: Description
+          type: string
+          description: Description of the component
+        targetPath:
+          title: Target Path in repo
+          type: string
+          description: Name of the directory to create in the repository
+        branchName:
+          title: Destination Branch Name
+          type: string
+          description: Name of the branch to create in the repository
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            requestUserCredentials:
+              secretsKey: USER_OAUTH_TOKEN
+
+  steps:
+    - id: publish
+      name: Publish
+      action: publish:gitlab:merge-request
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        title: Creating catalog-info.yaml ${{ parameters.name }} for backstage
+        branchName: ${{ parameters.branchName }}
+        description: |
+          # New project: ${{ parameters.name }}
+          ${{ parameters.description if parameters.description }}
+        targetPath: ${{ parameters.targetPath if parameters.targetPath else '.' }}
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        commitAction: create
+        removeSourceBranch: true
+
+  output:
+    links: 
+      - url: ${{ steps.publish.output.mergeRequestUrl }}
+        title: 'Go to Gitlab MR'
