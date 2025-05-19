@@ -40,21 +40,6 @@ spec:
               - github.com
 
   steps:
-    - id: fetch-base
-      name: Fetch Base
-      action: fetch:template
-      input:
-        url: ./template
-        values:
-          name: ${{parameters.name}}
-
-    - id: fetch-docs
-      name: Fetch Docs
-      action: fetch:plain
-      input:
-        targetPath: ./community
-        url: https://github.com/backstage/community/tree/main/backstage-community-sessions
-
     - id: publish
       name: Publish
       action: publish:github:pull-request
