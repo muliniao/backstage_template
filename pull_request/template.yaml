@@ -1,3 +1,13 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: github-pull-request
+  title: GitHub Pull Request
+  description: Scaffolder template demo publishing a Merge Request on existing GitHub repository
+spec:
+  owner: backstage/techdocs-core
+  type: service
+
 # Edit the template parameters below to see how they will render in the scaffolder form UI
 parameters:
   - title: Fill in some steps
