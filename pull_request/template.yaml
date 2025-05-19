@@ -27,10 +27,14 @@ spec:
           title: Target Path in repo
           type: string
           description: Name of the directory to create in the repository
+        branchName:
+          title: Branch name of pr
+          type: string
+          description: Branch Name          
         token:
           title: Token of github
           type: string
-          description: Name of the directory to create in the repository          
+          description: Personal Access Token          
     - title: Choose a location
       required:
         - repoUrl
@@ -50,7 +54,7 @@ spec:
       input:
         repoUrl: ${{ parameters.repoUrl }}
         title: "Create new project: ${{parameters.name}}"
-        branchName: create-${{parameters.name}}
+        branchName: create-${{parameters.branchName}}
         token: ${{ parameters.token }}
         description: |
           # New project: ${{parameters.name}}
