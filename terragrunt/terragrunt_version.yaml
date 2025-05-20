@@ -26,7 +26,3 @@ spec:
         script: | 
           terragrunt version
 
-  output:
-    links:
-      - url: ${{steps.publish.output.remoteUrl}}
-        title: "Go to PR"
