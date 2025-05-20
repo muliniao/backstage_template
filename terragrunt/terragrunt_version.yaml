@@ -1,0 +1,68 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: pull-request
+  title: Pull Request Action template
+  description: scaffolder v1beta3 template demo publishing to PR on existing git repository
+spec:
+  owner: backstage/techdocs-core
+  type: service
+
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:field: EntityNamePicker
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Description of the component
+        targetPath:
+          title: Target Path in repo
+          type: string
+          description: Name of the directory to create in the repository
+        branchName:
+          title: Branch name of pr
+          type: string
+          description: Branch Name          
+        token:
+          title: Token of github
+          type: string
+          description: Personal Access Token          
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: publish
+      name: Publish
+      action: publish:github:pull-request
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        title: "Create new project: ${{parameters.name}}"
+        branchName: create-${{parameters.branchName}}
+        token: ${{ parameters.token }}
+        description: |
+          # New project: ${{parameters.name}}
+
+          ${{ parameters.description if parameters.description }}
+        targetPath: ${{ parameters.targetPath if parameters.targetPath else parameters.name }}
+
+  output:
+    links:
+      - url: ${{steps.publish.output.remoteUrl}}
+        title: "Go to PR"
